@@ -23,23 +23,31 @@ class Point3D:
     def inRange(self, min_point: "Point3D", max_point: "Point3D", precision_range: float):
         return (
                 self.inRangeX(min_point.x, max_point.x, precision_range) and
-                self.inRangeX(min_point.x, max_point.x, precision_range) and
-                self.inRangeX(min_point.x, max_point.x, precision_range)
+                self.inRangeY(min_point.y, max_point.y, precision_range) and
+                self.inRangeZ(min_point.z, max_point.z, precision_range)
         )
 
     def rotation_y(self, point_0: "Point3D", rotation_deg: float) -> "Point3D":
         return Point3D(
-            x=(self.x - point_0.x) * np.cos(rotation_deg) - (self.z - point_0.z) * np.sin(rotation_deg) + point_0.x,
-            z=(self.z - point_0.z) * np.cos(rotation_deg) + (self.x - point_0.x) * np.sin(rotation_deg) + point_0.z,
+            x=(self.x - point_0.x) * np.cos(rotation_deg) + (self.z - point_0.z) * np.sin(rotation_deg) + point_0.x,
+            z=(self.z - point_0.z) * np.cos(rotation_deg) - (self.x - point_0.x) * np.sin(rotation_deg) + point_0.z,
             y=self.y
         )
 
     def rotation_z(self, point_0: "Point3D", rotation_deg: float) -> "Point3D":
         return Point3D(
-            y=(self.y - point_0.y) * np.cos(rotation_deg) - (self.x - point_0.x) * np.sin(rotation_deg) + point_0.y,
-            x=(self.x - point_0.x) * np.cos(rotation_deg) + (self.y - point_0.y) * np.sin(rotation_deg) + point_0.x,
+            y=(self.y - point_0.y) * np.cos(rotation_deg) + (self.x - point_0.x) * np.sin(rotation_deg) + point_0.y,
+            x=(self.x - point_0.x) * np.cos(rotation_deg) - (self.y - point_0.y) * np.sin(rotation_deg) + point_0.x,
             z=self.z
         )
+
+    def rotation_x(self, point_0: "Point3D", rotation_deg: float) -> "Point3D":
+        return Point3D(
+            y=(self.y - point_0.y) * np.cos(rotation_deg) - (self.z - point_0.z) * np.sin(rotation_deg) + point_0.y,
+            z=(self.z - point_0.z) * np.cos(rotation_deg) + (self.y - point_0.y) * np.sin(rotation_deg) + point_0.z,
+            x=self.x
+        )
+
 
     def __str__(self):
         return f'x:{self.x} y:{self.y} z:{self.z}'
