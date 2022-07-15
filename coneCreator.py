@@ -1,6 +1,7 @@
 import numpy as np
 
 from point import Point3D
+from progress.bar import Bar
 
 
 class ConeCreator:
@@ -13,8 +14,12 @@ class ConeCreator:
         )
         return point
 
+
+
     def spiral(self, z_arr: list, z_factor: float, base_point: Point3D, theta: float, alpha: float,
                max_point: Point3D, min_point: Point3D, precision_range: float) -> list:
+
+        pr = Bar('computing cone points by spiral method', max=len(z_arr), check_tty=False)
 
         data = list()
         for z in z_arr:
@@ -27,27 +32,38 @@ class ConeCreator:
 
             point = point.rotation_y(base_point, theta).rotation_z(base_point, alpha)
 
-            if point.inRange(min_point=min_point, max_point=max_point, precision_range=precision_range):
+            if point.inRange(min_point=min_point, max_point=max_point, precision_range=0):
                 data.append(point)
 
+            pr.next()
+        pr.finish()
         return data
 
 
+
     def circular(self, z_arr: list, z_factor: float, base_point: Point3D, theta: float, alpha: float,
-               max_point: Point3D, min_point: Point3D, precision_range: float) -> list:
+                 max_point: Point3D, min_point: Point3D, precision_range: float) -> list:
+
+        pr = Bar('computing cone points by circular method', max=len(z_arr), check_tty=False)
 
         data = list()
         for z in z_arr:
-            for inner_theta in range(360):
+            theta_factor = z / precision_range
+            theta_count = int(360 * theta_factor)
+
+            for theta_index in range(theta_count):
                 point = self.calculateConePointByZ(
                     base_point=base_point,
-                    theta=inner_theta,
-                    z=z * z_factor,
+                    z_factor=z_factor,
+                    theta=theta_index / theta_factor,
+                    z=z,
                 )
 
-                point.rotation_y(base_point, theta).rotation_z(base_point, alpha)
+                point = point.rotation_y(base_point, theta).rotation_z(base_point, alpha)
 
                 if point.inRange(min_point=min_point, max_point=max_point, precision_range=precision_range):
                     data.append(point)
 
+            pr.next()
+        pr.finish()
         return data
